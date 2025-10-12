@@ -15,11 +15,11 @@ import {
 import { cn } from '@/lib/utils'
 
 const chartColors = [
-  "var(--chart-1)",
   "var(--chart-2)",
   "var(--chart-3)",
   "var(--chart-4)",
   "var(--chart-5)",
+  "var(--chart-1)",
 ]
 
 interface PayerData {
@@ -120,6 +120,7 @@ export default function PieChartDynamic({
       <CardContent className="flex-1 pb-0">
         <ChartContainer
           config={chartConfig}
+
           className="mx-auto aspect-square max-h-[300px]"
         >
           <PieChart>

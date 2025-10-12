@@ -90,7 +90,7 @@ export const OverflowCreditCard: React.FC<OverflowCreditCardProps> = ({
                     <div className='flex flex-row justify-between'>
                       <p className='text-xs font-semibold'>{group.name}</p>
                       <p className='text-xs text-white/40'>
-                        {showPercentage ? 'Esgotado' : percentage.toFixed(0) + '%'}
+                        {showPercentage ? 'Esgotado' : percentage.toFixed(0) + '%' + ' usado'}
                       </p>
                     </div>
                     <Progress value={showPercentage ? 100 : percentage} className='mt-1' />

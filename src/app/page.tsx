@@ -14,6 +14,7 @@ import 'dayjs/locale/pt-br';
 
 
 import { useExpansesOverviewPayerQuery, useExpansesOverviewQuery, useExpansesOverviewUsePeriodAndPayerQuery, useExpansesOverviewUsePeriodQuery, useOverflowToCreditQuery } from '@/services/hooks/reports';
+import { DashboardCard } from '@/components/cards/DashboardCard';
 
 
 interface FormValues {
@@ -25,8 +26,8 @@ export default function Home() {
   const methods = useForm<FormValues>({
     defaultValues: {
       dateRange: {
-        from: dayjs().toDate(),
-        to: dayjs().add(1, 'month').toDate(),
+        from: dayjs().startOf('month').toDate(),
+        to: dayjs().endOf('month').toDate(),
       }
     }
   });
@@ -102,7 +103,7 @@ export default function Home() {
 
   return (
     <div className='w-full'>
-      <section className='flex flex-col items-end my-12'>
+      <section className='flex flex-col items-end mt-12 mb-6'>
         <FormProvider {...methods}>
           <DateRangePicker />
         </FormProvider>
@@ -110,20 +111,7 @@ export default function Home() {
 
       <section className='grid grid-cols-3 gap-4'>
         {
-          cards.map((card) => (
-            <Card key={card.title} className={cn('gap-2', card.className)}>
-              <CardHeader className='flex flex-row justify-between items-center'>
-                <CardTitle>{card.title}</CardTitle>
-                <div className='bg-gray-100/10 rounded-full p-3'>
-                  <card.icon className='size-5' />
-                </div>
-              </CardHeader>
-              <CardFooter className='flex flex-col items-start'>
-                <CardDescription className='text-2xl font-medium text-foreground'>{card.description}</CardDescription>
-                {card.balanceRemaining && <CardDescription className='text-sm text-muted-foreground'>Saldo disp. {card.balanceRemaining}</CardDescription>}
-              </CardFooter>
-            </Card>
-          ))
+          cards.map((card) => <DashboardCard key={card.title} isLoading={isLoading} {...card} />)
         }
       </section>
 
