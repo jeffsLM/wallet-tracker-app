@@ -18,6 +18,7 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart"
 import { cn } from '@/lib/utils'
+import { TooltipPayload } from 'recharts/types/state/tooltipSlice'
 
 // Tipos
 interface PaymentData {
@@ -168,7 +169,8 @@ export function AreaChartDynamic({
   }
 
   // Formata o mês
-  const formatMonth = (monthStr: string): string => {
+  const formatMonth = (monthStr: unknown, payload: TooltipPayload[]): React.ReactNode => {
+    if (typeof monthStr !== 'string') return null
     const [year, month] = monthStr.split('-')
     const date = new Date(parseInt(year), parseInt(month) - 1)
     return date.toLocaleDateString('pt-BR', {
@@ -176,7 +178,6 @@ export function AreaChartDynamic({
       year: 'numeric'
     })
   }
-
   return (
     <Card className={cn("pt-0 col-span-2", className)}>
       <CardHeader className="border-b pt-5 pb-3">
@@ -228,29 +229,17 @@ export function AreaChartDynamic({
                 tickLine={false}
                 axisLine={false}
                 tickMargin={8}
-                tickFormatter={formatMonth}
+                tickFormatter={(value) => formatMonth(value, []) as unknown as string}
               />
               <YAxis
                 tickLine={false}
                 axisLine={false}
                 tickMargin={8}
-                tickFormatter={(value) => `R$ ${value.toLocaleString('pt-BR')}`}
+                tickFormatter={(value) => formatCurrency(Number(value))}
               />
               <ChartTooltip
                 cursor={{ strokeDasharray: '3 3' }}
-                content={
-                  <ChartTooltipContent
-                    labelFormatter={formatMonth}
-                    className='bg-base-900'
-                    formatter={(value, name) => (
-                      <div className="flex items-center justify-between gap-4 min-w-[180px]">
-                        <span className="font-mono">{name}:</span>
-                        <span className="font-bold">{formatCurrency(Number(value))}</span>
-                      </div>
-                    )}
-                    indicator="dot"
-                  />
-                }
+                content={<ChartTooltipContent labelFormatter={(value, payload) => formatMonth(value, payload as unknown as TooltipPayload[])} />}
               />
               {payers.map((payer, index) => (
                 <Area
@@ -263,7 +252,7 @@ export function AreaChartDynamic({
                 />
               ))}
               <ChartLegend
-                content={<ChartLegendContent payload={payers} />}
+                content={<ChartLegendContent payload={payers.map((payer) => ({ value: payer }))} />}
                 verticalAlign="top"
               />
             </AreaChart>
@@ -273,3 +262,5 @@ export function AreaChartDynamic({
     </Card>
   )
 }
+
+export default AreaChartDynamic
